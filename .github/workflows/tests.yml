@@ -893,6 +893,8 @@ jobs:
           && sudo -u balena make self-signed \
           && sudo -u balena make verify \
           && sudo -u balena make restart \
+          && sleep $(((RANDOM%30)+30))s \
+          && docker compose wait sut \
           && docker compose wait dut"
 
         # AWS-RunShellScript runs as root
@@ -949,7 +951,7 @@ jobs:
         done
 
         echo '::info::settling down...'
-        sleep $(((RANDOM%30) + 15))s
+        sleep $(((RANDOM%15) + 15))s
 
         while [[ "$(aws ssm list-command-invocations --command-id "${cid}" \
           | jq -re '.CommandInvocations[].Status')" =~ InProgress ]]; do
